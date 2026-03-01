@@ -34,7 +34,7 @@ poetry run pytest --cov=src --cov-report=html
 
 ```
 
-git@github.com:HapkoM01/-.git
+git@github.com:HapkoM01/Product-and-Category.git
 
 ```
 
