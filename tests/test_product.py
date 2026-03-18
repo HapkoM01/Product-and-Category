@@ -1,3 +1,4 @@
+import pytest
 from src.product import Product
 
 
@@ -16,11 +17,69 @@ def test_product_initialization():
     assert product.quantity == 5
 
 
-def test_product_initialization_with_different_values():
-    """Тест инициализации с другими значениями"""
-    product = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
+def test_product_price_getter_setter(capsys):
+    """Тест геттера и сеттера цены"""
+    product = Product("Test Product", "Test Description", 100.0, 10)
 
-    assert product.name == "Iphone 15"
-    assert product.description == "512GB, Gray space"
+    assert product.price == 100.0
+
+    product.price = 150.0
+    assert product.price == 150.0
+
+    product.price = 0
+    captured = capsys.readouterr()
+    assert captured.out.strip() == "Цена не должна быть нулевая или отрицательная"
+    assert product.price == 150.0
+
+    product.price = -50
+    captured = capsys.readouterr()
+    assert captured.out.strip() == "Цена не должна быть нулевая или отрицательная"
+    assert product.price == 150.0
+
+
+def test_new_product_classmethod():
+    """Тест класс-метода new_product"""
+    product_data = {
+        'name': 'Iphone 15',
+        'description': '512GB, Gray space',
+        'price': 210000.0,
+        'quantity': 8
+    }
+
+    product = Product.new_product(product_data)
+
+    assert product.name == 'Iphone 15'
+    assert product.description == '512GB, Gray space'
     assert product.price == 210000.0
     assert product.quantity == 8
+
+
+def test_product_str_method():
+    """Тест строкового представления продукта"""
+    product = Product("Test Product", "Test Description", 100.0, 15)
+    expected_str = "Test Product, 100.0 руб. Остаток: 15 шт."
+    assert str(product) == expected_str
+
+
+def test_product_add_method():
+    """Тест сложения продуктов"""
+    product1 = Product("Product 1", "Description", 100.0, 10)
+    product2 = Product("Product 2", "Description", 200.0, 2)
+
+    expected_sum = 100 * 10 + 200 * 2  # 1000 + 400 = 1400
+    assert product1 + product2 == expected_sum
+
+    # Проверка с разными значениями
+    product3 = Product("Product 3", "Description", 50.0, 5)
+    product4 = Product("Product 4", "Description", 300.0, 1)
+
+    expected_sum = 50 * 5 + 300 * 1  # 250 + 300 = 550
+    assert product3 + product4 == expected_sum
+
+
+def test_product_add_with_non_product():
+    """Тест сложения продукта с не-продуктом"""
+    product = Product("Product", "Description", 100.0, 10)
+
+    with pytest.raises(TypeError):
+        result = product + 100
