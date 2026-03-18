@@ -1,5 +1,5 @@
 class Product:
-    """Класс для описания товара"""
+    """Базовый класс для описания товара"""
 
     def __init__(self, name: str, description: str, price: float, quantity: int):
         """Инициализация продукта"""
@@ -36,7 +36,7 @@ class Product:
         return f"{self.name}, {self.__price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other):
-        """Сложение двух продуктов по формуле: цена1 * количество1 + цена2 * количество2"""
-        if isinstance(other, Product):
-            return (self.__price * self.quantity) + (other.__price * other.quantity)
-        raise TypeError("Можно складывать только с объектами класса Product")
+        """Сложение двух продуктов одного класса"""
+        if type(self) is not type(other):
+            raise TypeError("Нельзя складывать товары разных классов")
+        return (self.__price * self.quantity) + (other.__price * other.quantity)

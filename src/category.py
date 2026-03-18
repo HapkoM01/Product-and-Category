@@ -20,8 +20,11 @@ class Category:
         # Увеличиваем счетчик товаров на длину списка продуктов
         Category.product_count += len(self.__products)
 
-    def add_product(self, product: Product):
-        """Метод для добавления продукта в категорию"""
+    def add_product(self, product):
+        """Метод для добавления продукта в категорию с проверкой типа"""
+        if not isinstance(product, Product):
+            raise TypeError("Можно добавлять только объекты класса Product или его наследников")
+
         self.__products.append(product)
         Category.product_count += 1
 
@@ -30,7 +33,7 @@ class Category:
         """Геттер для списка продуктов в отформатированном виде"""
         products_str = ""
         for product in self.__products:
-            products_str += str(product) + "\n"  # Используем __str__ продукта
+            products_str += str(product) + "\n"
         return products_str
 
     @property
@@ -42,4 +45,3 @@ class Category:
         """Строковое представление категории"""
         total_quantity = sum(product.quantity for product in self.__products)
         return f"{self.name}, количество продуктов: {total_quantity} шт."
-    
