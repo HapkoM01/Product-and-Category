@@ -1,0 +1,64 @@
+from src.product import Product
+
+
+class Category:
+    """Класс для описания категории товаров"""
+
+    # Атрибуты класса
+    category_count = 0
+    product_count = 0
+
+    def __init__(self, name: str, description: str, products: list[Product] = None):
+        """Инициализация категории"""
+        self.name = name
+        self.description = description
+        self.__products = products if products else []
+
+        # Увеличиваем счетчик категорий при создании объекта
+        Category.category_count += 1
+
+        # Увеличиваем счетчик товаров на длину списка продуктов
+        Category.product_count += len(self.__products)
+
+    def add_product(self, product):
+        """Метод для добавления продукта в категорию с проверкой типа"""
+        if not isinstance(product, Product):
+            raise TypeError("Можно добавлять только объекты класса Product или его наследников")
+
+        self.__products.append(product)
+        Category.product_count += 1
+
+    @property
+    def products(self):
+        """Геттер для списка продуктов в отформатированном виде"""
+        products_str = ""
+        for product in self.__products:
+            products_str += str(product) + "\n"
+        return products_str
+
+    @property
+    def products_list(self):
+        """Геттер для получения списка продуктов (для тестов)"""
+        return self.__products
+
+    def __str__(self):
+        """Строковое представление категории"""
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
+
+    def __len__(self):
+        """Возвращает количество продуктов в категории"""
+        return len(self.__products)
+
+    def middle_price(self):
+        """Подсчет среднего ценника всех товаров в категории"""
+        try:
+            total_sum = sum(product.price for product in self.__products)
+            return total_sum / len(self.__products)
+        except ZeroDivisionError:
+            # Если в категории нет товаров, возвращаем 0
+            return 0
+        except Exception as e:
+            # На всякий случай обрабатываем другие ошибки
+            print(f"Произошла ошибка: {e}")
+            return 0
